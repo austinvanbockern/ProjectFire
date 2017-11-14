@@ -2,6 +2,8 @@ var outputOut = document.getElementById("output");
 
 var stackOut = document.getElementById("stack");
 
+var terp;
+
 var PrintingWords = {
     // Print and discard top of stack.
     "PRINT": function (terp) {
@@ -124,10 +126,10 @@ var StackWords = {
 
 function setup()
 {
-	alert("here");
+	// alert("setup() accessed"); // debugging alert
 
 	/* Make new interpreter object */
-	var terp = new Scratch();
+	terp = new Scratch();
 
 	terp.addWords(PrintingWords);
 	terp.addWords(MathWords);
@@ -136,12 +138,15 @@ function setup()
 
 function hitSubmit() 
 {
+	//alert("hitSubmit() accessed"); // alert that says method is accessed
+
 	// Clear output
 	outputOut.innerHTML = "";
 
-	alert("here"); // alert that says method is accessed
 	// Run
-	terp.run(document.getElementById("input").value);
+	var input = document.getElementById("input").value;
+
+	terp.run(input);
 	// Output what is in the stack
 	stackOut.innerHTML = terp.stack;
 
