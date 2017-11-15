@@ -316,7 +316,7 @@ var LogicWords = {
 	}
 };
 LogicWords["BOTH"] = LogicWords["AND"];
-LogicWords["EITHER"] = LogicWords["OR"];
+LogicWords["EITHER"] = LogicWords["OR"]; 
 
 var CompareWords = {
 	"<": function (terp) {
