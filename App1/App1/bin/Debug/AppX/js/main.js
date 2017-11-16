@@ -1,4 +1,4 @@
-﻿var doctype = ">>ICED_LATTE<<";
+﻿var doctype = "ICEICEBABY";
 
 var outputOut = document.getElementById("output");
 
@@ -10,7 +10,7 @@ var words;
 
 var next;
 
-var PrintingWords = {
+var PrintWords = {
     // Print and discard top of stack.
     "PRINT": function (terp) {
         if ((words.length - next) < 1) {
@@ -357,43 +357,209 @@ function setup() {
 function hitSubmit() {
     //alert("hitSubmit() accessed"); // alert that says method is accessed
 
-    // Clear output
-    outputOut.innerHTML = "";
+    //// Clear output
+    //outputOut.innerHTML = "";
 
-    /* Make new interpreter object */
-    terp = new Scratch();
+    ///* Make new interpreter object */
+    //terp = new Scratch();
 
-    terp.addWords(PrintingWords);
-    terp.addWords(MathWords);
-    terp.addWords(StackWords);
-    terp.addWords(CommentWords);
-    terp.addWords(CompilingWords);
-    terp.addWords(ListWords);
-    terp.addWords(ControlWords);
-    terp.addWords(LogicWords);
-    terp.addWords(CompareWords);
+    //terp.addWords(PrintingWords);
+    //terp.addWords(MathWords);
+    //terp.addWords(StackWords);
+    //terp.addWords(CommentWords);
+    //terp.addWords(CompilingWords);
+    //terp.addWords(ListWords);
+    //terp.addWords(ControlWords);
+    //terp.addWords(LogicWords);
+    //terp.addWords(CompareWords);
 
     // Run
     var input = document.getElementById("input").value;
 
-    terp.run(input);
-    // Output what is in the stack
-    stackOut.innerHTML = terp.stack;
+    //terp.run(input);
+    //// Output what is in the stack
+    //stackOut.innerHTML = terp.stack;
+
+    Interpret(input);
 
     return false;
 }
 
-function ScratchLexer(text) {
-    // Create array from input
-    words = text.split(/\s+/);
-    // Var as index
-    next = 0;
+//// Collections
+// Dictionary for keybords
+var keywords = {};
+// 2d array for variables
+var variables = [[]];
+// Array for words within a statement
+var words = [];
+// Array for statements i.e. single lines of code
+var statements = [];
 
-    this.nextWord = function () {
-        if (next >= words.length) return null;
-        return words[next++];
-    };
+//// Tracking variables
+// var for index of statements array
+var stateI = 0;
+// var for index of words array
+var wordsI = 0;
+// var for current word
+var word = "";
+// var for current statement
+var statement = "";
+
+//// Delimeters
+// delimeter for separating statements
+var statementDelim = ";";
+
+// Interpret(Compile) code 
+function Interpret(input) {
+
+    // add keywords to dictionary
+    AddDictWords(PrintWords);
+
+    // Split input into individual statements
+    statements = SplitStatements(input);
+
+    // check for doctype statement
+    if (GetNextStatement() === doctype) {
+        // Loop through statements, processing each one
+        for (stateI = 1; stateI < statements.length; stateI++) {
+            // get current statement
+            statement = GetNextStatement();
+
+            // if null was not assigned to current statement, loop through statement and process each word
+            if (statement != null) {
+
+                // get current statement
+                words = SplitSpaces(statement);
+
+                // loop through words in current statement
+                for (wordsI = 0; wordsI < words.length; wordsI++) {
+                    // get current word
+                    word = GetNextWord();
+
+                    // process word
+                    if (keywords[word])
+                    {
+                        keywords[word](this);
+                    }
+
+                    //outputOut.innerHTML += word + ", ";
+                }
+            }
+            // else, break out of statement loop
+            else {
+                alert("Statement is null.");
+                break;
+            }
+        }
+    }
+    else {
+        outputOut.innerHTML = "DOCTYPE not found.";
+    }
 }
+
+// Try and add variable to variable list
+function AddVar(dataType, name, content) {
+
+}
+
+// Split designated text by spaces
+function SplitSpaces(text) {
+    // Create and return array from input split at spaces
+    var collection = text.split(/\s+/);
+    // clean array of blank elements and return it
+    return RemoveBlanks(collection);
+}
+
+// Split designated text into statements 
+function SplitStatements(text) {
+    // Create and return array from input split at spaces
+    var collection = text.split(statementDelim);
+    // clean array of blank elements and return it
+    return RemoveBlanks(collection);
+}
+
+// Get next statement in the statements array
+function GetNextStatement() {
+    // If the next statement does not exist i.e. end of code, return null
+    if (stateI >= statements.length)
+        return null;
+    // else, return the statement
+    else
+        return statements[stateI];
+}
+
+// Get next word in the array
+function GetNextWord() {
+    // If the next word does not exist i.e. end of statement, return null
+    if (wordsI >= words.length)
+        return null;
+    // else, return the word
+    else
+        return words[wordsI];
+}
+
+// Remove blank elements from an array and return cleaned array
+function RemoveBlanks(collection) {
+    // loop trough array
+    for (var i = 0; i < collection.length; i++) {
+        // test if index is blank
+        if (collection[i] === "") {
+            // remove element at that index
+            collection.splice(i, 1);
+        }
+    }
+    // return clean collection
+    return collection;
+}
+
+// Add keywords to keywords dictuonary
+function AddDictWords(dictionary) {
+    // Loop through sss
+    for (var word in dictionary)
+    {
+        keywords[word.toUpperCase()] = dictionary[word];
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function Scratch() {
     var dictionary = {};
@@ -404,10 +570,6 @@ function Scratch() {
     this.stack = data_stack; // Was: this.stack = [];
     this.immediate = false;
 
-    this.addWords = function (new_dict) {
-        for (var word in new_dict)
-            dictionary[word.toUpperCase()] = new_dict[word];
-    };
 
     this.compile = function (word) {
         var word = word.toUpperCase();
@@ -425,29 +587,7 @@ function Scratch() {
     // attempt to run code
     this.run = function (text) {
         // new lexer object
-        this.lexer = new ScratchLexer(text);
-        // get next word
-        var word = this.lexer.nextWord();
-
-        // if the first word does not match the doctype, stop, quit trying to run
-        if (word != doctype) {
-            return false;
-        }
-
-        // loop through each individual word of code
-        while (word = this.lexer.nextWord()) {
-            // dysipher the word
-            word = this.compile(word);
-            // if current word is part of a sequence,
-            if (this.immediate) {
-                this.interpret(word);
-                this.immediate = false;
-            } else if (this.isCompiling()) {
-                this.stack.push(word);
-            } else {
-                this.interpret(word);
-            }
-        }
+        
     };
 
     this.interpret = function (word) {

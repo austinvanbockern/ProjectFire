@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Machine>CND6273DK3</Machine>
-    <WindowsUser>Austin.VanBockern</WindowsUser>
+    <WindowsUser>austin.vanbockern</WindowsUser>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetOsVersion>10.0</TargetOsVersion>
     <TargetOsDescription>Windows 10.0</TargetOsDescription>
@@ -10,7 +10,7 @@
     <PackageArchitecture>neutral</PackageArchitecture>
     <PackageIdentityName>81420111-9b30-4396-b80d-511ff37701fe</PackageIdentityName>
     <PackageIdentityPublisher>CN=Austin.VanBockern</PackageIdentityPublisher>
-    <IntermediateOutputPath>c:\users\austin.vanbockern\Source\Repos\App1\App1\bld\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bld\Debug\</IntermediateOutputPath>
     <RemoteDeploymentType>
     </RemoteDeploymentType>
     <PackageRegistrationPath>
@@ -19,7 +19,7 @@
     <DeployOptionalPackages>false</DeployOptionalPackages>
     <WindowsSdkPath>
     </WindowsSdkPath>
-    <LayoutDir>c:\users\austin.vanbockern\Source\Repos\App1\App1\bin\Debug\AppX</LayoutDir>
+    <LayoutDir>C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bin\Debug\AppX</LayoutDir>
     <RegisteredManifestChecksum>5AC57A545507AB40BF95ADD0362B98DE5437F7A621B5751F4BFBE8774B7A72D4</RegisteredManifestChecksum>
     <RegisteredPackageMoniker>81420111-9b30-4396-b80d-511ff37701fe_1.0.0.0_neutral__t1kynsxwj46e8</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>81420111-9b30-4396-b80d-511ff37701fe_t1kynsxwj46e8!App</RegisteredUserModeAppID>
@@ -29,60 +29,60 @@
     <JitOptimizationSuppressed>True</JitOptimizationSuppressed>
   </PropertyGroup>
   <ItemGroup>
-    <AppXManifest Include="c:\users\austin.vanbockern\Source\Repos\App1\App1\bin\Debug\AppxManifest.xml">
+    <AppXManifest Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2017-11-14T23:38:39.062</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
-    <AppxPackagedFile Include="c:\users\austin.vanbockern\Source\Repos\App1\App1\index.html">
+    <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\index.html">
       <PackagePath>index.html</PackagePath>
-      <Modified>2017-11-14T23:58:07.576</Modified>
+      <Modified>2017-11-16T16:59:50.721</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="c:\users\austin.vanbockern\Source\Repos\App1\App1\images\LockScreenLogo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\images\LockScreenLogo.scale-200.png">
       <PackagePath>images\LockScreenLogo.scale-200.png</PackagePath>
       <Modified>2017-11-06T20:33:52.905</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="c:\users\austin.vanbockern\Source\Repos\App1\App1\images\SplashScreen.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\images\SplashScreen.scale-200.png">
       <PackagePath>images\SplashScreen.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2017-11-06T20:33:52.905</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="c:\users\austin.vanbockern\Source\Repos\App1\App1\images\Square150x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\images\Square150x150Logo.scale-200.png">
       <PackagePath>images\Square150x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2017-11-06T20:33:52.905</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="c:\users\austin.vanbockern\Source\Repos\App1\App1\images\Square44x44Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\images\Square44x44Logo.scale-200.png">
       <PackagePath>images\Square44x44Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2017-11-06T20:33:52.905</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="c:\users\austin.vanbockern\Source\Repos\App1\App1\images\Square44x44Logo.targetsize-24_altform-unplated.png">
+    <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\images\Square44x44Logo.targetsize-24_altform-unplated.png">
       <PackagePath>images\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2017-11-06T20:33:52.905</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="c:\users\austin.vanbockern\Source\Repos\App1\App1\images\StoreLogo.png">
+    <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\images\StoreLogo.png">
       <PackagePath>images\StoreLogo.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2017-11-06T20:33:52.905</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="c:\users\austin.vanbockern\Source\Repos\App1\App1\images\Wide310x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\images\Wide310x150Logo.scale-200.png">
       <PackagePath>images\Wide310x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2017-11-06T20:33:52.905</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="c:\users\austin.vanbockern\Source\Repos\App1\App1\js\main.js">
+    <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\js\main.js">
       <PackagePath>js\main.js</PackagePath>
-      <Modified>2017-11-15T00:38:21.635</Modified>
+      <Modified>2017-11-16T17:00:14.551</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="c:\users\austin.vanbockern\Source\Repos\App1\App1\css\default.css">
+    <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\css\default.css">
       <PackagePath>css\default.css</PackagePath>
       <Modified>2017-11-14T23:56:13.769</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="c:\users\austin.vanbockern\Source\Repos\App1\App1\bin\Debug\ReverseMap\resources.pri">
+    <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2017-11-14T23:38:38.844</Modified>
