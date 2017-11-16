@@ -1,27 +1,39 @@
-﻿var doctype = "ICEICEBABY";
+﻿var outputOut = document.getElementById("output");
 
-var outputOut = document.getElementById("output");
+var errorOut = document.getElementById("errors");
 
-var stackOut = document.getElementById("stack");
 
-var terp;
-
-var words;
-
-var next;
-
+// Keywords for printing
 var PrintWords = {
     // Print and discard top of stack.
-    "PRINT": function (terp) {
-        if ((words.length - next) < 1) {
-            outputOut.innerHTML = "Not enough items on stack";
-            return false;
+    "PRINT": function () {
+        // get the next word
+        word = GetNextWord();
+        // if the next word is null i.e. does not exist, error
+        if (word != null) {
+
+            // var for output
+            var output = "";
+            // if output is a string, find the whole string and assign it to output
+            if (word.substr(0, 1) === "\"") {
+                output = FindString();
+            }
+            // else, just output the word
+            else {
+                output = word;
+            }
+
+            // output
+            outputOut.innerHTML += output;
         }
-        var tos = terp.lexer.nextWord();
-        outputOut.innerHTML += tos;
+        // else, error and stop interpreting/compiling
+        else {
+            errorOut.innerHTML += "Nothing to print. Missing parameter.";
+            return;
+        }
     },
     // Print out the contents of the stack.
-    "PSTACK": function (terp) {
+    "PRINTLINE": function (terp) {
         outputOut.innerHTML += terp.stack;
     }
 };
@@ -376,6 +388,9 @@ function hitSubmit() {
     // Run
     var input = document.getElementById("input").value;
 
+    // Reset form
+    ResetForm();
+
     //terp.run(input);
     //// Output what is in the stack
     //stackOut.innerHTML = terp.stack;
@@ -385,8 +400,30 @@ function hitSubmit() {
     return false;
 }
 
+function ResetForm() {
+
+    keywords = {};
+    variables = [[]];
+    words = [];
+    statements = [];
+
+    stateI = 0;
+    wordsI = 0;
+    word = "";
+    statement = "";
+
+    outputOut.innerHTML = "";
+    errorOut.innerHTML = "";
+}
+
+//// Constants
+// DOCTYPE const
+const DOCTYPE = "ICEICEBABY";
+// delimeter for separating statements
+const STATEMENT_DELIM = ";";
+
 //// Collections
-// Dictionary for keybords
+// Dictionary for keybord methods
 var keywords = {};
 // 2d array for variables
 var variables = [[]];
@@ -405,9 +442,6 @@ var word = "";
 // var for current statement
 var statement = "";
 
-//// Delimeters
-// delimeter for separating statements
-var statementDelim = ";";
 
 // Interpret(Compile) code 
 function Interpret(input) {
@@ -419,9 +453,9 @@ function Interpret(input) {
     statements = SplitStatements(input);
 
     // check for doctype statement
-    if (GetNextStatement() === doctype) {
+    if (GetNextStatement() === DOCTYPE) {
         // Loop through statements, processing each one
-        for (stateI = 1; stateI < statements.length; stateI++) {
+        for (stateI = 1; stateI < statements.length; stateI = stateI) {
             // get current statement
             statement = GetNextStatement();
 
@@ -432,11 +466,11 @@ function Interpret(input) {
                 words = SplitSpaces(statement);
 
                 // loop through words in current statement
-                for (wordsI = 0; wordsI < words.length; wordsI++) {
+                for (wordsI = 0; wordsI < words.length; wordsI = wordsI) {
                     // get current word
                     word = GetNextWord();
 
-                    // process word
+                    // process word TODO
                     if (keywords[word])
                     {
                         keywords[word](this);
@@ -473,7 +507,7 @@ function SplitSpaces(text) {
 // Split designated text into statements 
 function SplitStatements(text) {
     // Create and return array from input split at spaces
-    var collection = text.split(statementDelim);
+    var collection = text.split(STATEMENT_DELIM);
     // clean array of blank elements and return it
     return RemoveBlanks(collection);
 }
@@ -485,7 +519,7 @@ function GetNextStatement() {
         return null;
     // else, return the statement
     else
-        return statements[stateI];
+        return statements[stateI++];
 }
 
 // Get next word in the array
@@ -495,7 +529,7 @@ function GetNextWord() {
         return null;
     // else, return the word
     else
-        return words[wordsI];
+        return words[wordsI++];
 }
 
 // Remove blank elements from an array and return cleaned array
@@ -503,7 +537,7 @@ function RemoveBlanks(collection) {
     // loop trough array
     for (var i = 0; i < collection.length; i++) {
         // test if index is blank
-        if (collection[i] === "") {
+        if (collection[i] === "" || collection[i] === "\n") {
             // remove element at that index
             collection.splice(i, 1);
         }
@@ -514,11 +548,57 @@ function RemoveBlanks(collection) {
 
 // Add keywords to keywords dictuonary
 function AddDictWords(dictionary) {
-    // Loop through sss
+    // Loop through
     for (var word in dictionary)
     {
         keywords[word.toUpperCase()] = dictionary[word];
     }
+}
+
+// Hangle strings (using double quotes) TODO
+function FindString() {
+
+    // string to return
+    var returnStr = "";
+
+    // If first character is a quote, remove it and find the end quote
+    if (word.substr(0, 1) === "\"")
+    {
+        // Remove first quote
+        word = word.slice(1);
+
+        // loop through words 
+        while (word != null)
+        {
+            // If end quote is found, return the current 
+            if (word.substr(-1, 1) === "\"")
+            {
+                word = word.substr(0, word.length - 1);
+
+                returnStr += word;
+
+                return returnStr;
+            }
+            else {
+                // add word to return string
+                returnStr += word;
+
+                if (words.length != wordsI) {
+                    returnStr += " ";
+                }
+            }
+
+            // get next word
+            word = GetNextWord();
+        }
+
+        errorOut.innerHTML = "End quote not found.";
+        return;
+    }
+
+
+
+
 }
 
 
