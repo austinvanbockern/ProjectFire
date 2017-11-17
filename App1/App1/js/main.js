@@ -14,16 +14,26 @@ var PrintWords = {
 
             // var for output
             var output = "";
-            // if output is a string, find the whole string and assign it to output
-            if (word.substr(0, 1) === "\"") {
-                output = FindString();
+
+            // if word is a variable, assign contents to output
+            if (variables[word]) {
+                output = variables[word].Content;
             }
-            // else, just output the word
-            else {
+            // if output is a string, find the whole string and assign it to output
+            else if (word.substr(0, 1) === "\"") {
+                output = GetString();
+            }
+            // if content is a number, assign number to output
+            else if (!isNaN(word)) {
                 output = word;
             }
+            // else, error and return
+            else {
+                errorOut.innerHTML += "Unexpected word to PRINT: " + word;
+                return;
+            }
 
-            // output
+            // output output
             outputOut.innerHTML += output;
         }
         // else, error and stop interpreting/compiling
@@ -33,8 +43,41 @@ var PrintWords = {
         }
     },
     // Print out the contents of the stack.
-    "PRINTLINE": function (terp) {
-        outputOut.innerHTML += terp.stack;
+    "PRINTLINE": function () {
+        // get the next word
+        word = GetNextWord();
+        // if the next word is null i.e. does not exist, error
+        if (word != null) {
+
+            // var for output
+            var output = "";
+
+            // if word is a variable, assign contents to output
+            if (variables[word]) {
+                output = variables[word].Content;
+            }
+            // if output is a string, find the whole string and assign it to output
+            else if (word.substr(0, 1) === "\"") {
+                output = GetString();
+            }
+            // if content is a number, assign number to output
+            else if (!isNaN(word)) {
+                output = word;
+            }
+            // else, error and return
+            else {
+                errorOut.innerHTML += "Unexpected word to PRINT: " + word;
+                return;
+            }
+
+            // output output
+            outputOut.innerHTML += output + "<br />";
+        }
+        // else, error and stop interpreting/compiling
+        else {
+            errorOut.innerHTML += "Nothing to print. Missing parameter.";
+            return;
+        }
     }
 };
 
@@ -56,10 +99,6 @@ var CommentWords = {
     //	terp.lexer.nextCharsUpTo("\n");
     //}
 };
-CommentWords[">>"].immediate = true;
-//CommentWords["("].immediate = true;
-//CommentWords["//"].immediate = true;
-//CommentWords["\\"] = CommentWords["//"];
 
 var MathWords = {
     "+": function (terp) {
@@ -185,8 +224,6 @@ var CompilingWords = {
         terp.stopCompiling();
     }
 };
-CompilingWords["DEF"].immediate = true;
-CompilingWords["END"].immediate = true;
 
 var ListWords = {
     "[": function (terp) {
@@ -234,7 +271,6 @@ var ListWords = {
         }
     }
 };
-ListWords["["].immediate = true;
 
 var ControlWords = {
     "RUN": function (terp) {
@@ -314,8 +350,6 @@ var LogicWords = {
         terp.stack.push(!terp.stack.pop());
     }
 };
-LogicWords["BOTH"] = LogicWords["AND"];
-LogicWords["EITHER"] = LogicWords["OR"];
 
 var CompareWords = {
     // less than
@@ -361,49 +395,277 @@ var CompareWords = {
     }
 };
 
+var VariableWords = {
+    // less than
+    "NEW": function () {
+
+        var dataType = "";
+        var name = "";
+        var content;
+
+        word = GetNextWord();
+
+        // If variable being declared is an integer
+        if (word.toUpperCase() === "INT") {
+
+            // set datatype as int
+            dataType = "INT";
+
+            // get next word
+            word = GetNextWord();
+
+            // TODO VALIDATION FOR NAMING RULES
+            // if variable name already exists or variable name is a keyword, error
+            if (keywords[word] || variables[word]) {
+                errorOut.innerHTML += "Invalid variable name.";
+                return;
+            }
+            // else, assign word to variable name var
+            else {
+                name = word;
+            }
+
+            // get next word
+            word = GetNextWord();
+
+            // if next word is a colon i.e. user wants to assign the varialbe, handle assignment
+            if (word === ":") {
+
+                // get next word
+                word = GetNextWord();
+
+                // if word is numeric
+                if (!isNaN(word)) {
+
+                    // parse data and assign data to content
+                    content = parseInt(word);
+
+                    AddVar(dataType, name, content);
+                }
+                else {
+                    errorOut.innerHTML += "Conents of an integer must be numeric.";
+                }
+            }
+            // check for semicolons
+            else if (word === ";") {
+
+            }
+            // else, statement was not completed properly; error
+            else {
+                errorOut.innerHTML += "Assignment statement unfinished.";
+            }
+        }
+        // If variable being declared is a DOUBLE
+        else if (word.toUpperCase() === "DOUBLE") {
+
+            // set datatype as double
+            dataType = "DOUBLE";
+
+            // get next word
+            word = GetNextWord();
+
+            // if variable name already exists or variable name is a keyword, error and return
+            if (keywords[word.toUpperCase()] || variables[word]) {
+                errorOut.innerHTML += "Invalid variable name.";
+                return;
+            }
+            // else, assign word to variable name var
+            else {
+                name = word;
+            }
+
+            // get next word
+            word = GetNextWord();
+
+            // if next word is a colon i.e. user wants to assign the varialbe, handle assignment
+            if (word === ":") {
+
+                // get next word
+                word = GetNextWord();
+
+                // if word is numeric
+                if (!isNaN(word)) {
+
+                    // parse data and assign data to content
+                    content = parseFloat(word);
+
+                    AddVar(dataType, name, content);
+                }
+                else {
+                    errorOut.innerHTML += "Contents of n double must be numeric.";
+                }
+            }
+            // check for semicolons
+            else if (word === ";") {
+
+            }
+            // else, statement was not completed properly; error
+            else {
+                errorOut.innerHTML += "Assignment statement unfinished.";
+            }
+        }
+        else if (word.toUpperCase() === "BOOLEAN") {
+
+            // set datatype as boolean
+            dataType = "BOOLEAN";
+
+            // get next word
+            word = GetNextWord();
+
+            // TODO VALIDATION FOR NAMING RULES
+            // if variable name already exists or variable name is a keyword, error
+            if (keywords[word.toUpperCase()] || variables[word]) {
+                errorOut.innerHTML += "Invalid variable name.";
+                return;
+            }
+            // else, assign word to variable name var
+            else {
+                name = word;
+            }
+
+            // get next word
+            word = GetNextWord();
+
+            // if next word is a colon i.e. user wants to assign the varialbe, handle assignment
+            if (word === ":") {
+
+                // get next word
+                word = GetNextWord();
+
+                // if word is true or 0, assign true
+                if (word === "true" || word === "0") {
+
+                    content = true;
+
+                    // add var to dictionary
+                    AddVar(dataType, name, content);
+                }
+                // if word is false or 1, assign false
+                else if (word === "false" || word === "1") {
+
+                    content = false;
+
+                    // add var to dictionary
+                    AddVar(dataType, name, content);
+                }
+                // else, error and return
+                else {
+                    errorOut.innerHTML += "Conents of a boolean must be either true or false.";
+                    return;
+                }
+            }
+            // check for semicolons
+            else if (word === ";") {
+
+            }
+            // else, statement was not completed properly; error
+            else {
+                errorOut.innerHTML += "Assignment statement unfinished.";
+            }
+        }
+        else if (word.toUpperCase() === "STRING") {
+            dataType = "STRING";
+        }
+
+    },
+    "ASSIGN": function (terp) {
+
+        // get next word
+        word = GetNextWord();
+
+        // if word exists, handle
+        if (variables[word]) {
+
+            // assign current word to variable to be used later
+            indexer = word;
+
+            // get next word
+            word = GetNextWord();
+
+            // make sure next word is assignment opperator
+            if (word === ":") {
+
+                // get next word
+                word = GetNextWord();
+
+                // handle data type
+                if (variables[indexer].DataType === "BOOLEAN" &&
+                    variables[indexer].Content === true ||
+                    variables[indexer].Content === false) {
+
+                }
+                else if (variables[indexer].DataType === "DOUBLE" &&
+                         !isNaN(variables[indexer].Content)) {
+
+                }
+                else if (variables[indexer].DataType === "INT" &&
+                         !isNaN(variables[indexer].Content)) {
+
+                }
+                    // fix TODO
+                else if (variables[indexer].DataType === "STRING" &&
+                         isString?!?!!?!?) {
+
+                }
+                
+            }
+
+        }
+        // else, error and return
+        else
+        {
+            errorOut.innerHTML = "Variable does not exist.";
+            return;
+        }
+
+    }
+};
 
 function setup() {
     // alert("setup() accessed"); // debugging alert
 }
 
-function hitSubmit() {
-    //alert("hitSubmit() accessed"); // alert that says method is accessed
-
-    //// Clear output
-    //outputOut.innerHTML = "";
-
-    ///* Make new interpreter object */
-    //terp = new Scratch();
-
-    //terp.addWords(PrintingWords);
-    //terp.addWords(MathWords);
-    //terp.addWords(StackWords);
-    //terp.addWords(CommentWords);
-    //terp.addWords(CompilingWords);
-    //terp.addWords(ListWords);
-    //terp.addWords(ControlWords);
-    //terp.addWords(LogicWords);
-    //terp.addWords(CompareWords);
+function HitSubmit() {
 
     // Run
-    var input = document.getElementById("input").value;
+    var input = document.getElementById("input").innerText;
 
     // Reset form
     ResetForm();
 
-    //terp.run(input);
-    //// Output what is in the stack
-    //stackOut.innerHTML = terp.stack;
-
+    // Run interpreter
     Interpret(input);
 
+    // return false so action prop of form is not run
     return false;
 }
 
+function DoIntellisence() {
+
+    //var text = document.getElementById("input").innerHTML;
+
+    //var cursor = document.getElementById("input").selectionStart;
+
+    //if (text.indexOf("PRINT") !== -1)
+    //{
+    //    document.getElementById("input").innerHTML = text.replace("PRINT", "<span style=\"color: blue\">PRINT</span>");
+    //}
+
+    //document.getElementById("input").move('character', cursor);
+    //document.getElementById("input").select();
+
+    //document.getElementById("input").selectionStart = cursor;
+
+}
+
+// Resets form and class level variables
 function ResetForm() {
 
     keywords = {};
-    variables = [[]];
+    variables = {
+        DataType: "DataType",
+        Content: "Content"
+    };
     words = [];
     statements = [];
 
@@ -425,8 +687,11 @@ const STATEMENT_DELIM = ";";
 //// Collections
 // Dictionary for keybord methods
 var keywords = {};
-// 2d array for variables
-var variables = [[]];
+// Dictionary for variables
+var variables = {
+    DataType: "DataType",
+    Content: "Content"
+};
 // Array for words within a statement
 var words = [];
 // Array for statements i.e. single lines of code
@@ -448,6 +713,7 @@ function Interpret(input) {
 
     // add keywords to dictionary
     AddDictWords(PrintWords);
+    AddDictWords(VariableWords);
 
     // Split input into individual statements
     statements = SplitStatements(input);
@@ -467,13 +733,21 @@ function Interpret(input) {
 
                 // loop through words in current statement
                 for (wordsI = 0; wordsI < words.length; wordsI = wordsI) {
-                    // get current word
-                    word = GetNextWord();
+
+                    // get nexy word
+                    word = GetNextWord().toUpperCase();
 
                     // process word TODO
                     if (keywords[word])
                     {
                         keywords[word](this);
+                    }
+                    else if (variables[word]) {
+                        outputOut.innerHTML = variables[word].Content;
+                    }
+                    else {
+                        errorOut.innerHTML = "Word not recognized: " + word;
+                        return;
                     }
 
                     //outputOut.innerHTML += word + ", ";
@@ -493,6 +767,19 @@ function Interpret(input) {
 
 // Try and add variable to variable list
 function AddVar(dataType, name, content) {
+
+    // add new item to variable dictionary
+    variables[name] = {
+        DataType: dataType,
+        Content: content
+    };
+
+}
+
+// Get content of a variable
+function GetVar(name) {
+
+    return variables[name].Content;
 
 }
 
@@ -556,7 +843,7 @@ function AddDictWords(dictionary) {
 }
 
 // Hangle strings (using double quotes) TODO
-function FindString() {
+function GetString() {
 
     // string to return
     var returnStr = "";
@@ -592,103 +879,10 @@ function FindString() {
             word = GetNextWord();
         }
 
-        errorOut.innerHTML = "End quote not found.";
+        errorOut.innerHTML += "End quote not found.<br>";
         return;
     }
-
-
-
-
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function Scratch() {
-    var dictionary = {};
-    var data_stack = [];
-    var compile_buffer = [];
-    var variables = [[]];
-
-    this.stack = data_stack; // Was: this.stack = [];
-    this.immediate = false;
-
-
-    this.compile = function (word) {
-        var word = word.toUpperCase();
-        var num_val = parseFloat(word);
-        if (dictionary[word]) {
-            this.immediate = dictionary[word].immediate;
-            return dictionary[word];
-        } else if (!isNaN(num_val)) {
-            return num_val;
-        } else {
-            outputOut.innerHTML = "Unknown word";
-        }
-    };
-
-    // attempt to run code
-    this.run = function (text) {
-        // new lexer object
-        
-    };
-
-    this.interpret = function (word) {
-        if (typeof (word) == 'function') {
-            word(this);
-        } else {
-            this.stack.push(word);
-        }
-    };
-
-    this.startCompiling = function () {
-        this.stack = compile_buffer;
-    };
-
-    this.stopCompiling = function () {
-        this.stack = data_stack;
-    };
-
-    this.isCompiling = function () {
-        return this.stack == compile_buffer;
-    };
-}
-
-document.getElementById("compile").addEventListener("click", hitSubmit);
+document.getElementById("compile").addEventListener("click", HitSubmit);
+//document.addEventListener("keydown", DoIntellisence);

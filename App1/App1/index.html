@@ -3,15 +3,41 @@
 <head>
     <title>Scratch</title>
     <link href="css/default.css" rel="stylesheet" />
+
+    <style>
+
+        code {
+            border: 1px solid black;
+            width: 700px;
+            height: 300px;
+        }
+
+        #out {
+            border: 1px solid black;
+            background-color: beige;
+            width: 700px;
+            height: 200px;
+            padding: 5px;
+        }
+
+    </style>
 </head>
 <body>
     <form>
-        <textarea id="input" rows="10" cols="50">ICEICEBABY;</textarea>
+        <code contenteditable="true" id="input" >
+            ICEICEBABY;
+        </code>
+        <!--
+        <textarea  rows="10" cols="50">ICEICEBABY;</textarea>-->
         <br />
         <input type="button" name="compile" id="compile" value="Compile" />
     </form>
 
-    <strong>Output: </strong><span id="output"></span><span id="errors" style="color: red"></span>
+    <strong>Output: </strong><br />
+    <div id="out">
+        <span id="output"></span>
+        <span id="errors" style="color: red"></span>
+    </div>
 
     <script type="text/javascript" src="js/main.js"></script>
 </body>
