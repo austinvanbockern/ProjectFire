@@ -16,21 +16,27 @@ var PrintWords = {
             var output = "";
 
             // if word is a variable, assign contents to output
-            if (variables[word]) {
+            if (variables[word] && variables[word].DataType === "STRING") {
+                output = variables[word].Content;
+            }
+            else if (variables[word] && variables[word].DataType === "BOOLEAN") {
                 output = variables[word].Content;
             }
             // if output is a string, find the whole string and assign it to output
             else if (word.substr(0, 1) === "\"") {
                 output = GetString();
             }
-            // if content is a number, assign number to output
-            else if (!isNaN(word)) {
-                output = word;
-            }
-            // else, error and return
+            // else
             else {
-                errorOut.innerHTML += "Unexpected word to PRINT: " + word;
-                return;
+
+                // get equasion and output it
+                output = GetEvaluation();
+
+                // if null was returned, return false
+                if (output === null) {
+                    return false;
+                }
+
             }
 
             // output output
@@ -53,21 +59,27 @@ var PrintWords = {
             var output = "";
 
             // if word is a variable, assign contents to output
-            if (variables[word]) {
+            if (variables[word] && variables[word].DataType === "STRING") {
+                output = variables[word].Content;
+            }
+            else if (variables[word] && variables[word].DataType === "BOOLEAN") {
                 output = variables[word].Content;
             }
             // if output is a string, find the whole string and assign it to output
             else if (word.substr(0, 1) === "\"") {
                 output = GetString();
             }
-            // if content is a number, assign number to output
-            else if (!isNaN(word)) {
-                output = word;
-            }
-            // else, error and return
+            // else
             else {
-                errorOut.innerHTML += "Unexpected word to PRINT: " + word;
-                return;
+
+                // get equasion and output it
+                output = GetEvaluation();
+
+                // if null was returned, return false
+                if (output === null) {
+                    return false;
+                }
+
             }
 
             // output output
@@ -99,10 +111,6 @@ var CommentWords = {
     //	terp.lexer.nextCharsUpTo("\n");
     //}
 };
-CommentWords[">>"].immediate = true;
-//CommentWords["("].immediate = true;
-//CommentWords["//"].immediate = true;
-//CommentWords["\\"] = CommentWords["//"];
 
 var MathWords = {
     "+": function (terp) {
@@ -228,8 +236,6 @@ var CompilingWords = {
         terp.stopCompiling();
     }
 };
-CompilingWords["DEF"].immediate = true;
-CompilingWords["END"].immediate = true;
 
 var ListWords = {
     "[": function (terp) {
@@ -277,7 +283,6 @@ var ListWords = {
         }
     }
 };
-ListWords["["].immediate = true;
 
 var ControlWords = {
     "RUN": function (terp) {
@@ -357,8 +362,6 @@ var LogicWords = {
         terp.stack.push(!terp.stack.pop());
     }
 };
-LogicWords["BOTH"] = LogicWords["AND"];
-LogicWords["EITHER"] = LogicWords["OR"];
 
 var CompareWords = {
     // less than
@@ -405,7 +408,6 @@ var CompareWords = {
 };
 
 var VariableWords = {
-    // less than
     "NEW": function () {
 
         var dataType = "";
@@ -427,7 +429,7 @@ var VariableWords = {
             // if variable name already exists or variable name is a keyword, error
             if (keywords[word] || variables[word]) {
                 errorOut.innerHTML += "Invalid variable name.";
-                return;
+                return false;
             }
             // else, assign word to variable name var
             else {
@@ -453,15 +455,17 @@ var VariableWords = {
                 }
                 else {
                     errorOut.innerHTML += "Conents of an integer must be numeric.";
+                    return false;
                 }
             }
             // check for semicolons
-            else if (word === ";") {
-
+            else if (word === null) {
+                AddVar(dataType, name, null);
             }
             // else, statement was not completed properly; error
             else {
                 errorOut.innerHTML += "Assignment statement unfinished.";
+                return false;
             }
         }
         // If variable being declared is a DOUBLE
@@ -473,8 +477,7 @@ var VariableWords = {
             // get next word
             word = GetNextWord();
 
-            // TODO VALIDATION FOR NAMING RULES
-            // if variable name already exists or variable name is a keyword, error
+            // if variable name already exists or variable name is a keyword, error and return
             if (keywords[word.toUpperCase()] || variables[word]) {
                 errorOut.innerHTML += "Invalid variable name.";
                 return;
@@ -503,15 +506,17 @@ var VariableWords = {
                 }
                 else {
                     errorOut.innerHTML += "Contents of n double must be numeric.";
+                    return false;
                 }
             }
             // check for semicolons
-            else if (word === ";") {
-
+            else if (word === null) {
+                AddVar(dataType, name, null);
             }
             // else, statement was not completed properly; error
             else {
                 errorOut.innerHTML += "Assignment statement unfinished.";
+                return false;
             }
         }
         else if (word.toUpperCase() === "BOOLEAN") {
@@ -543,17 +548,17 @@ var VariableWords = {
                 word = GetNextWord();
 
                 // if word is true or 0, assign true
-                if (word === "true" || word === "0") {
+                if (word === "false" || word === "0") {
 
-                    content = true;
+                    content = false;
 
                     // add var to dictionary
                     AddVar(dataType, name, content);
                 }
                 // if word is false or 1, assign false
-                else if (word === "false" || word === "1") {
+                else if (word === "true" || word === "1") {
 
-                    content = false;
+                    content = true;
 
                     // add var to dictionary
                     AddVar(dataType, name, content);
@@ -561,30 +566,123 @@ var VariableWords = {
                 // else, error and return
                 else {
                     errorOut.innerHTML += "Conents of a boolean must be either true or false.";
-                    return;
+                    return false;
                 }
             }
             // check for semicolons
-            else if (word === ";") {
-
+            else if (word === null) {
+                AddVar(dataType, name, null);
             }
             // else, statement was not completed properly; error
             else {
                 errorOut.innerHTML += "Assignment statement unfinished.";
+                return false;
             }
         }
         else if (word.toUpperCase() === "STRING") {
             dataType = "STRING";
+
+            // get next word
+            word = GetNextWord();
+
+            // TODO VALIDATION FOR NAMING RULES
+            // if variable name already exists or variable name is a keyword, error
+            if (keywords[word.toUpperCase()] || variables[word]) {
+                errorOut.innerHTML += "Invalid variable name.";
+                return;
+            }
+            // else, assign word to variable name var
+            else {
+                name = word;
+            }
+
+            // get next word
+            word = GetNextWord();
+
+            // if next word is a colon i.e. user wants to assign the varialbe, handle assignment
+            if (word === ":") {
+
+                // get next word
+                word = GetNextWord();
+
+                // assign string word to content
+                if (word.substr(0, 1) === "\"") {
+
+                    content = GetString();
+
+                    // If content returns not null, add variable
+                    if (content != null) {
+                        AddVar(dataType, name, content);
+                    }
+
+                }
+                else {
+                    errorOut.innerHTML += "Contents of a string must be a string.";
+                    return false;
+                }
+
+            }
+            // check for semicolons
+            else if (word === null) {
+                AddVar(dataType, name, null);
+            }
+            // else, statement was not completed properly; error
+            else {
+                errorOut.innerHTML += "Assignment statement unfinished.";
+                return false;
+            }
         }
 
     },
     "ASSIGN": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
+
+        // get next word
+        word = GetNextWord();
+
+        // if word exists, handle
+        if (variables[word]) {
+
+            // assign current word to variable to be used later
+            indexer = word;
+
+            // get next word
+            word = GetNextWord();
+
+            // make sure next word is assignment opperator
+            if (word === ":") {
+
+                // get next word
+                word = GetNextWord();
+
+                // handle data type
+                if (variables[indexer].DataType === "BOOLEAN" &&
+                    variables[indexer].Content === true ||
+                    variables[indexer].Content === false) {
+
+                }
+                else if (variables[indexer].DataType === "DOUBLE" &&
+                         !isNaN(variables[indexer].Content)) {
+
+                }
+                else if (variables[indexer].DataType === "INT" &&
+                         !isNaN(variables[indexer].Content)) {
+
+                }
+                    // fix TODO
+                else if (variables[indexer].DataType === "STRING") {
+
+                }
+                
+            }
+
         }
-        var term2 = terp.stack.pop();
-        var term1 = terp.stack.pop();
-        terp.stack.push(term1 <= term2);
+        // else, error and return
+        else
+        {
+            errorOut.innerHTML = "Variable does not exist.";
+            return false;
+        }
+
     }
 };
 
@@ -593,23 +691,6 @@ function setup() {
 }
 
 function HitSubmit() {
-    //alert("hitSubmit() accessed"); // alert that says method is accessed
-
-    //// Clear output
-    //outputOut.innerHTML = "";
-
-    ///* Make new interpreter object */
-    //terp = new Scratch();
-
-    //terp.addWords(PrintingWords);
-    //terp.addWords(MathWords);
-    //terp.addWords(StackWords);
-    //terp.addWords(CommentWords);
-    //terp.addWords(CompilingWords);
-    //terp.addWords(ListWords);
-    //terp.addWords(ControlWords);
-    //terp.addWords(LogicWords);
-    //terp.addWords(CompareWords);
 
     // Run
     var input = document.getElementById("input").innerText;
@@ -617,12 +698,10 @@ function HitSubmit() {
     // Reset form
     ResetForm();
 
-    //terp.run(input);
-    //// Output what is in the stack
-    //stackOut.innerHTML = terp.stack;
-
+    // Run interpreter
     Interpret(input);
 
+    // return false so action prop of form is not run
     return false;
 }
 
@@ -723,19 +802,25 @@ function Interpret(input) {
                     // get nexy word
                     word = GetNextWord().toUpperCase();
 
+                    // var to store returned value
+                    var returnVar = true;
+
                     // process word TODO
                     if (keywords[word])
                     {
-                        keywords[word](this);
+                        returnVar = keywords[word](this);
                     }
                     else if (variables[word]) {
                         outputOut.innerHTML = variables[word].Content;
                     }
                     else {
-                        errorOut.innerHTML = "Word not recognized: " + word;
+                        errorOut.innerHTML += "Word not recognized: " + word;
                         return;
                     }
 
+                    if (returnVar === false) {
+                        return;
+                    }
                     //outputOut.innerHTML += word + ", ";
                 }
             }
@@ -870,94 +955,40 @@ function GetString() {
     }
 }
 
+function GetEvaluation() {
 
+    var evalString = "";
 
+    var outString = "";
 
+    while (word != null) {
 
+        // determine if word exists
+        if (variables[word]) {
 
+            evalString += variables[word].Content;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function Scratch() {
-    var dictionary = {};
-    var data_stack = [];
-    var compile_buffer = [];
-    var variables = [[]];
-
-    this.stack = data_stack; // Was: this.stack = [];
-    this.immediate = false;
-
-
-    this.compile = function (word) {
-        var word = word.toUpperCase();
-        var num_val = parseFloat(word);
-        if (dictionary[word]) {
-            this.immediate = dictionary[word].immediate;
-            return dictionary[word];
-        } else if (!isNaN(num_val)) {
-            return num_val;
-        } else {
-            outputOut.innerHTML = "Unknown word";
         }
-    };
-
-    // attempt to run code
-    this.run = function (text) {
-        // new lexer object
-        
-    };
-
-    this.interpret = function (word) {
-        if (typeof (word) == 'function') {
-            word(this);
-        } else {
-            this.stack.push(word);
+        else {
+            evalString += word;
         }
-    };
 
-    this.startCompiling = function () {
-        this.stack = compile_buffer;
-    };
+        word = GetNextWord();
+    }
 
-    this.stopCompiling = function () {
-        this.stack = data_stack;
-    };
+    // try to evaluate string expression
+    try {
+        outString = eval(evalString);
+    }
+    catch (e) {
+        // error if evaluation did not work
+        errorOut.innerHTML += "Output of evaluation was not in a correct format.<br/>" +
+                              "Are all values numeric?";
+        return null;
+    }
 
-    this.isCompiling = function () {
-        return this.stack == compile_buffer;
-    };
+    return outString;
+
 }
 
 document.getElementById("compile").addEventListener("click", HitSubmit);

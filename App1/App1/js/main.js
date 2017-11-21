@@ -16,21 +16,27 @@ var PrintWords = {
             var output = "";
 
             // if word is a variable, assign contents to output
-            if (variables[word]) {
+            if (variables[word] && variables[word].DataType === "STRING") {
+                output = variables[word].Content;
+            }
+            else if (variables[word] && variables[word].DataType === "BOOLEAN") {
                 output = variables[word].Content;
             }
             // if output is a string, find the whole string and assign it to output
             else if (word.substr(0, 1) === "\"") {
                 output = GetString();
             }
-            // if content is a number, assign number to output
-            else if (!isNaN(word)) {
-                output = word;
-            }
-            // else, error and return
+            // else
             else {
-                errorOut.innerHTML += "Unexpected word to PRINT: " + word;
-                return;
+
+                // get equasion and output it
+                output = GetEvaluation();
+
+                // if null was returned, return false
+                if (output === null) {
+                    return false;
+                }
+
             }
 
             // output output
@@ -53,21 +59,27 @@ var PrintWords = {
             var output = "";
 
             // if word is a variable, assign contents to output
-            if (variables[word]) {
+            if (variables[word] && variables[word].DataType === "STRING") {
+                output = variables[word].Content;
+            }
+            else if (variables[word] && variables[word].DataType === "BOOLEAN") {
                 output = variables[word].Content;
             }
             // if output is a string, find the whole string and assign it to output
             else if (word.substr(0, 1) === "\"") {
                 output = GetString();
             }
-            // if content is a number, assign number to output
-            else if (!isNaN(word)) {
-                output = word;
-            }
-            // else, error and return
+            // else
             else {
-                errorOut.innerHTML += "Unexpected word to PRINT: " + word;
-                return;
+
+                // get equasion and output it
+                output = GetEvaluation();
+
+                // if null was returned, return false
+                if (output === null) {
+                    return false;
+                }
+
             }
 
             // output output
@@ -396,7 +408,6 @@ var CompareWords = {
 };
 
 var VariableWords = {
-    // less than
     "NEW": function () {
 
         var dataType = "";
@@ -418,7 +429,7 @@ var VariableWords = {
             // if variable name already exists or variable name is a keyword, error
             if (keywords[word] || variables[word]) {
                 errorOut.innerHTML += "Invalid variable name.";
-                return;
+                return false;
             }
             // else, assign word to variable name var
             else {
@@ -444,15 +455,17 @@ var VariableWords = {
                 }
                 else {
                     errorOut.innerHTML += "Conents of an integer must be numeric.";
+                    return false;
                 }
             }
             // check for semicolons
-            else if (word === ";") {
-
+            else if (word === null) {
+                AddVar(dataType, name, null);
             }
             // else, statement was not completed properly; error
             else {
                 errorOut.innerHTML += "Assignment statement unfinished.";
+                return false;
             }
         }
         // If variable being declared is a DOUBLE
@@ -493,15 +506,17 @@ var VariableWords = {
                 }
                 else {
                     errorOut.innerHTML += "Contents of n double must be numeric.";
+                    return false;
                 }
             }
             // check for semicolons
-            else if (word === ";") {
-
+            else if (word === null) {
+                AddVar(dataType, name, null);
             }
             // else, statement was not completed properly; error
             else {
                 errorOut.innerHTML += "Assignment statement unfinished.";
+                return false;
             }
         }
         else if (word.toUpperCase() === "BOOLEAN") {
@@ -533,17 +548,17 @@ var VariableWords = {
                 word = GetNextWord();
 
                 // if word is true or 0, assign true
-                if (word === "true" || word === "0") {
+                if (word === "false" || word === "0") {
 
-                    content = true;
+                    content = false;
 
                     // add var to dictionary
                     AddVar(dataType, name, content);
                 }
                 // if word is false or 1, assign false
-                else if (word === "false" || word === "1") {
+                else if (word === "true" || word === "1") {
 
-                    content = false;
+                    content = true;
 
                     // add var to dictionary
                     AddVar(dataType, name, content);
@@ -551,20 +566,71 @@ var VariableWords = {
                 // else, error and return
                 else {
                     errorOut.innerHTML += "Conents of a boolean must be either true or false.";
-                    return;
+                    return false;
                 }
             }
             // check for semicolons
-            else if (word === ";") {
-
+            else if (word === null) {
+                AddVar(dataType, name, null);
             }
             // else, statement was not completed properly; error
             else {
                 errorOut.innerHTML += "Assignment statement unfinished.";
+                return false;
             }
         }
         else if (word.toUpperCase() === "STRING") {
             dataType = "STRING";
+
+            // get next word
+            word = GetNextWord();
+
+            // TODO VALIDATION FOR NAMING RULES
+            // if variable name already exists or variable name is a keyword, error
+            if (keywords[word.toUpperCase()] || variables[word]) {
+                errorOut.innerHTML += "Invalid variable name.";
+                return;
+            }
+            // else, assign word to variable name var
+            else {
+                name = word;
+            }
+
+            // get next word
+            word = GetNextWord();
+
+            // if next word is a colon i.e. user wants to assign the varialbe, handle assignment
+            if (word === ":") {
+
+                // get next word
+                word = GetNextWord();
+
+                // assign string word to content
+                if (word.substr(0, 1) === "\"") {
+
+                    content = GetString();
+
+                    // If content returns not null, add variable
+                    if (content != null) {
+                        AddVar(dataType, name, content);
+                    }
+
+                }
+                else {
+                    errorOut.innerHTML += "Contents of a string must be a string.";
+                    return false;
+                }
+
+            }
+            // check for semicolons
+            else if (word === null) {
+                AddVar(dataType, name, null);
+            }
+            // else, statement was not completed properly; error
+            else {
+                errorOut.innerHTML += "Assignment statement unfinished.";
+                return false;
+            }
         }
 
     },
@@ -603,8 +669,7 @@ var VariableWords = {
 
                 }
                     // fix TODO
-                else if (variables[indexer].DataType === "STRING" &&
-                         isString?!?!!?!?) {
+                else if (variables[indexer].DataType === "STRING") {
 
                 }
                 
@@ -615,7 +680,7 @@ var VariableWords = {
         else
         {
             errorOut.innerHTML = "Variable does not exist.";
-            return;
+            return false;
         }
 
     }
@@ -737,19 +802,25 @@ function Interpret(input) {
                     // get nexy word
                     word = GetNextWord().toUpperCase();
 
+                    // var to store returned value
+                    var returnVar = true;
+
                     // process word TODO
                     if (keywords[word])
                     {
-                        keywords[word](this);
+                        returnVar = keywords[word](this);
                     }
                     else if (variables[word]) {
                         outputOut.innerHTML = variables[word].Content;
                     }
                     else {
-                        errorOut.innerHTML = "Word not recognized: " + word;
+                        errorOut.innerHTML += "Word not recognized: " + word;
                         return;
                     }
 
+                    if (returnVar === false) {
+                        return;
+                    }
                     //outputOut.innerHTML += word + ", ";
                 }
             }
@@ -882,6 +953,42 @@ function GetString() {
         errorOut.innerHTML += "End quote not found.<br>";
         return;
     }
+}
+
+function GetEvaluation() {
+
+    var evalString = "";
+
+    var outString = "";
+
+    while (word != null) {
+
+        // determine if word exists
+        if (variables[word]) {
+
+            evalString += variables[word].Content;
+
+        }
+        else {
+            evalString += word;
+        }
+
+        word = GetNextWord();
+    }
+
+    // try to evaluate string expression
+    try {
+        outString = eval(evalString);
+    }
+    catch (e) {
+        // error if evaluation did not work
+        errorOut.innerHTML += "Output of evaluation was not in a correct format.<br/>" +
+                              "Are all values numeric?";
+        return null;
+    }
+
+    return outString;
+
 }
 
 document.getElementById("compile").addEventListener("click", HitSubmit);
