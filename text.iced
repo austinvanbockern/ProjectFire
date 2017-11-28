@@ -1,2 +1,3 @@
->>ICED_LATTE<<
+ICEICEBABY;
 
+PRINT "Hello World";

@@ -24,7 +24,24 @@
 </head>
 <body>
     <form>
-        <code contenteditable="true" id="input" >
+        <h1>Project Fire</h1>
+
+        <label>
+            Text Input
+            <input type="radio" value="text" name="inputType" checked="checked" onclick="textMode()" />
+        </label>
+        <br />
+        <label>
+            File Input
+            <input type="radio" value="file" name="inputType" onclick="fileMode()" />
+        </label>
+
+        <br />
+        <br />
+
+        <input type="file" id="fileInput" style="visibility: hidden"/><br />
+
+        <code contenteditable="true" id="textInput" >
             ICEICEBABY;
         </code>
         <!--

@@ -991,5 +991,34 @@ function GetEvaluation() {
 
 }
 
+function textMode() {
+
+    document.getElementById("textInput").style.visibility = "visible";
+
+    document.getElementById("fileInput").style.visibility = "hidden";
+
+}
+
+function fileMode() {
+
+    document.getElementById("textInput").style.visibility = "visible";
+
+    document.getElementById("fileInput").style.visibility = "hidden";
+
+}
+
 document.getElementById("compile").addEventListener("click", HitSubmit);
+
+document.getElementById("textInput").addEventListener("change", textMode);
+document.getElementById("fileInput").addEventListener("change", fileMode);
+
+document.getElementById("textInput").onclick = function () {
+
+    document.getElementById("textInput").style.visibility = "visible";
+
+    document.getElementById("fileInput").style.visibility = "hidden";
+
+}
+
+//document.getElementById("textInput").addEventListener()
 //document.addEventListener("keydown", DoIntellisence);
