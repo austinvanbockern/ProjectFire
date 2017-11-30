@@ -926,11 +926,6 @@ function fileMode() {
 
 }
 
-document.getElementById("compile").addEventListener("click", HitSubmit);
-
-document.getElementById("textType").addEventListener("click", textMode);
-document.getElementById("fileType").addEventListener("click", fileMode);
-
 document.getElementById("textInput").onclick = function () {
 
     document.getElementById("textInput").style.visibility = "visible";
@@ -938,6 +933,11 @@ document.getElementById("textInput").onclick = function () {
     document.getElementById("fileInput").style.visibility = "hidden";
 
 }
+
+document.getElementById("compile").addEventListener("click", HitSubmit);
+
+document.getElementById("textType").addEventListener("click", textMode);
+document.getElementById("fileType").addEventListener("click", fileMode);
 
 //document.getElementById("textInput").addEventListener()
 //document.addEventListener("keydown", DoIntellisence);
