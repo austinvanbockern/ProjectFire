@@ -38,7 +38,7 @@
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\index.html">
       <PackagePath>index.html</PackagePath>
-      <Modified>2017-11-28T17:40:32.167</Modified>
+      <Modified>2017-11-30T16:10:32.214</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\images\LockScreenLogo.scale-200.png">
       <PackagePath>images\LockScreenLogo.scale-200.png</PackagePath>
@@ -76,7 +76,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\js\main.js">
       <PackagePath>js\main.js</PackagePath>
-      <Modified>2017-11-28T17:48:18.787</Modified>
+      <Modified>2017-11-30T17:18:08.828</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\css\default.css">
       <PackagePath>css\default.css</PackagePath>

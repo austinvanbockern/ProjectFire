@@ -112,257 +112,6 @@ var CommentWords = {
     //}
 };
 
-var MathWords = {
-    "+": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var tos = terp.stack.pop();
-        var _2os = terp.stack.pop();
-        terp.stack.push(_2os + tos);
-    },
-    "-": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var tos = terp.stack.pop();
-        var _2os = terp.stack.pop();
-        terp.stack.push(_2os - tos);
-    },
-    "*": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var tos = terp.stack.pop();
-        var _2os = terp.stack.pop();
-        terp.stack.push(_2os * tos);
-    },
-    "/": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var tos = terp.stack.pop();
-        var _2os = terp.stack.pop();
-        terp.stack.push(_2os / tos);
-    },
-    "SQRT": function (terp) {
-        if (terp.stack.length < 1) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var tos = terp.stack.pop();
-        terp.stack.push(Math.sqrt(tos));
-    }
-};
-
-var StackWords = {
-    // Duplicate the top of stack (TOS).
-    "DUP": function (terp) {
-        if (terp.stack.length < 1) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var tos = terp.stack.pop();
-        terp.stack.push(tos);
-        terp.stack.push(tos);
-    },
-    // Throw away the TOS -- the opposite of DUP.
-    "DROP": function (terp) {
-        if (terp.stack.length < 1) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        terp.stack.pop();
-    },
-    // Exchange positions of TOS and second item on stack (2OS).
-    "SWAP": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var tos = terp.stack.pop();
-        var _2os = terp.stack.pop();
-        terp.stack.push(tos);
-        terp.stack.push(_2os);
-    },
-    // Copy 2OS on top of stack.
-    "OVER": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var tos = terp.stack.pop();
-        var _2os = terp.stack.pop();
-        terp.stack.push(_2os);
-        terp.stack.push(tos);
-        terp.stack.push(_2os);
-    },
-    // Bring the 3rd item on stack to the top.
-    "ROT": function (terp) {
-        if (terp.stack.length < 3) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var tos = terp.stack.pop();
-        var _2os = terp.stack.pop();
-        var _3os = terp.stack.pop();
-        terp.stack.push(_2os);
-        terp.stack.push(tos);
-        terp.stack.push(_3os);
-    },
-};
-
-function makeWord(code) {
-    return function (terp) {
-        var old_pointer = terp.code_pointer;
-        terp.code_pointer = 0;
-        while (terp.code_pointer < code.length) {
-            terp.interpret(code[terp.code_pointer]);
-            terp.code_pointer++;
-        }
-        terp.code_pointer = old_pointer;
-    };
-}
-
-var CompilingWords = {
-    "DEF": function (terp) {
-        var new_word = terp.lexer.nextWord();
-        if (new_word === null) {
-            outputOut.innerHTML = "Unexpected end of input";
-        }
-
-        terp.latest = new_word;
-        terp.startCompiling();
-    },
-
-    "END": function (terp) {
-        var new_code = terp.stack.slice(0); // Clone compile_buffer.
-        terp.stack.length = 0; // Clear compile_buffer.
-        terp.define(terp.latest, makeWord(new_code));
-        terp.stopCompiling();
-    }
-};
-
-var ListWords = {
-    "[": function (terp) {
-        var list = [];
-        var old_stack = terp.stack;
-        terp.stack = list;
-
-        do {
-            var next_word = terp.lexer.nextWord();
-            if (next_word === null) {
-                outputOut.innerHTML = "Unexpected end of input";
-            }
-            if (next_word === "]") break;
-
-            next_word = terp.compile(next_word);
-            if (next_word.immediate)
-                terp.interpret(next_word);
-            else
-                terp.stack.push(next_word);
-        } while (true);
-
-        terp.stack = old_stack;
-        terp.stack.push(list);
-    },
-
-    "LENGTH": function (terp) {
-        if (terp.stack.length < 1) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var temp = terp.stack.pop();
-        terp.stack.push(temp.length);
-    },
-
-    "ITEM": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var key = terp.stack.pop();
-        var obj = terp.stack.pop();
-        if (typeof obj === "object") {
-            terp.stack.push(obj[key]);
-        }
-        else {
-            outputOut.innerHTML = "Object expected";
-        }
-    }
-};
-
-var ControlWords = {
-    "RUN": function (terp) {
-        if (terp.stack.length < 1) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var temp = terp.stack.pop();
-        if (temp.constructor !== Array) {
-            outputOut.innerHTML = "List expected";
-        }
-
-        terp.interpret(makeWord(temp));
-    },
-
-    "?CONTINUE": function (terp) {
-        if (terp.stack.length < 1) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var cond = terp.stack.pop();
-        if (cond) terp.code_pointer = Infinity;
-    },
-
-    "?BREAK": function (terp) {
-        if (terp.stack.length < 1) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var cond = terp.stack.pop();
-        if (cond) {
-            terp.code_pointer = Infinity;
-            terp.break_state = true;
-        }
-    },
-
-    "LOOP": function (terp) {
-        if (terp.stack.length < 1) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var code = terp.stack.pop();
-        if (code.constructor !== Array) {
-            outputOut.innerHTML = "List expected";
-        }
-
-        var code_word = makeWord(code);
-        var old_break_state = terp.break_state;
-        terp.break_state = false;
-        do { code_word(terp); } while (!terp.break_state);
-        terp.break_state = old_break_state;
-    }
-};
-
-var LogicWords = {
-    "TRUE": function (terp) { terp.stack.push(true); },
-    "FALSE": function (terp) { terp.stack.push(false); },
-
-    "AND": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var term2 = terp.stack.pop();
-        var term1 = terp.stack.pop();
-        terp.stack.push(term1 && term2);
-    },
-
-    "OR": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var term2 = terp.stack.pop();
-        var term1 = terp.stack.pop();
-        terp.stack.push(term1 || term2);
-    },
-
-    "NOT": function (terp) {
-        if (terp.stack.length < 1) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        terp.stack.push(!terp.stack.pop());
-    }
-};
-
 var CompareWords = {
     // less than
     "<": function (terp) {
@@ -445,6 +194,9 @@ var VariableWords = {
                 // get next word
                 word = GetNextWord();
 
+                // get next word
+                word = GetEvaluation();
+
                 // if word is numeric
                 if (!isNaN(word)) {
 
@@ -495,6 +247,9 @@ var VariableWords = {
 
                 // get next word
                 word = GetNextWord();
+
+                // get next word
+                word = GetEvaluation();
 
                 // if word is numeric
                 if (!isNaN(word)) {
@@ -589,7 +344,7 @@ var VariableWords = {
             // if variable name already exists or variable name is a keyword, error
             if (keywords[word.toUpperCase()] || variables[word]) {
                 errorOut.innerHTML += "Invalid variable name.";
-                return;
+                return false;
             }
             // else, assign word to variable name var
             else {
@@ -637,63 +392,220 @@ var VariableWords = {
     "ASSIGN": function (terp) {
 
         // get next word
-        word = GetNextWord();
+        var varName = GetNextWord();
 
-        // if word exists, handle
-        if (variables[word]) {
+        // if word exists,
+        if (variables[varName]) {
 
-            // assign current word to variable to be used later
-            indexer = word;
-
-            // get next word
-            word = GetNextWord();
-
-            // make sure next word is assignment opperator
-            if (word === ":") {
+            // If variable being assigned is an integer
+            if (variables[varName].DataType === "INT") {
 
                 // get next word
                 word = GetNextWord();
 
-                // handle data type
-                if (variables[indexer].DataType === "BOOLEAN" &&
-                    variables[indexer].Content === true ||
-                    variables[indexer].Content === false) {
+                // if next word is a colon i.e. user wants to assign the varialbe, handle assignment
+                if (word === ":") {
+
+                    // get next word
+                    word = GetNextWord();
+
+                    // get next word
+                    word = GetEvaluation();
+
+                    // if word is numeric
+                    if (!isNaN(word)) {
+
+                        // parse data and assign data to content
+                        content = parseInt(word);
+
+                        UpdateVar(varName, content);
+                    }
+                    else {
+                        errorOut.innerHTML += "Conents of an integer must be numeric.";
+                        return false;
+                    }
+                }
+                // else, statement was not completed properly; error
+                else {
+                    errorOut.innerHTML += "Assignment statement unfinished.";
+                    return false;
+                }
+            }
+            // If variable being assigned is an integer
+            else if (variables[varName].DataType === "DOUBLE") {
+
+                // get next word
+                word = GetNextWord();
+
+                // if next word is a colon i.e. user wants to assign the varialbe, handle assignment
+                if (word === ":") {
+
+                    // get next word
+                    word = GetNextWord();
+
+                    // get next word
+                    word = GetEvaluation();
+
+                    // if word is numeric
+                    if (!isNaN(word)) {
+
+                        // parse data and assign data to content
+                        content = parseFloat(word);
+
+                        UpdateVar(varName, content);
+                    }
+                    else {
+                        errorOut.innerHTML += "Contents of n double must be numeric.";
+                        return false;
+                    }
+                }
+                // else, statement was not completed properly; error
+                else {
+                    errorOut.innerHTML += "Assignment statement unfinished.";
+                    return false;
+                }
+
+            }
+            else if (variables[varName].DataType === "BOOLEAN") {
+
+                // get next word
+                word = GetNextWord();
+
+                // if next word is a colon i.e. user wants to assign the varialbe, handle assignment
+                if (word === ":") {
+
+                    // get next word
+                    word = GetNextWord();
+
+                    // if word is true or 0, assign true
+                    if (word === "false" || word === "0") {
+
+                        content = false;
+
+                        // add var to dictionary
+                        UpdateVar(varName, content);
+                    }
+                    // if word is false or 1, assign false
+                    else if (word === "true" || word === "1") {
+
+                        content = true;
+
+                        // add var to dictionary
+                        UpdateVar(varName, content);
+                    }
+                    // else, error and return
+                    else {
+                        errorOut.innerHTML += "Conents of a boolean must be either true or false.";
+                        return false;
+                    }
+                }
+                // else, statement was not completed properly; error
+                else {
+                    errorOut.innerHTML += "Assignment statement unfinished.";
+                    return false;
+                }
+            }
+            else if (variables[varName].DataType === "STRING") {
+
+                // get next word
+                word = GetNextWord();
+
+                // if next word is a colon i.e. user wants to assign the varialbe, handle assignment
+                if (word === ":") {
+
+                    // get next word
+                    word = GetNextWord();
+
+                    // assign string word to content
+                    if (word.substr(0, 1) === "\"") {
+
+                        content = GetString();
+
+                        // If content returns not null, add variable
+                        if (content != null) {
+                            // add var to dictionary
+                            UpdateVar(varName, content);
+                        }
+
+                    }
+                    else {
+                        errorOut.innerHTML += "Contents of a string must be a string.";
+                        return false;
+                    }
 
                 }
-                else if (variables[indexer].DataType === "DOUBLE" &&
-                         !isNaN(variables[indexer].Content)) {
-
+                // else, statement was not completed properly; error
+                else {
+                    errorOut.innerHTML += "Assignment statement unfinished.";
+                    return false;
                 }
-                else if (variables[indexer].DataType === "INT" &&
-                         !isNaN(variables[indexer].Content)) {
-
-                }
-                    // fix TODO
-                else if (variables[indexer].DataType === "STRING") {
-
-                }
-                
+            }
+            else {
+                errorOut.innerHTML += "Assignment statement unfinished.";
+                return false;
             }
 
+            }
+            // else, error and return
+            else {
+                errorOut.innerHTML = "Variable does not exist.";
+                return false;
+            }
         }
-        // else, error and return
-        else
-        {
-            errorOut.innerHTML = "Variable does not exist.";
-            return false;
-        }
-
-    }
 };
-
-function setup() {
-    // alert("setup() accessed"); // debugging alert
-}
 
 function HitSubmit() {
 
-    // Run
-    var input = document.getElementById("input").innerText;
+    // Var for input text
+    var input;
+
+    // If input is from text area, get input from text area
+    if (document.getElementById("textType").checked) {
+
+        // Get text from html element innerHTML
+        input = document.getElementById("textInput").innerText;
+
+    }
+    // If input is from file, get input from file
+    else if (document.getElementById("fileType").checked) {
+
+        var file = document.getElementById("fileInput").files[0];
+
+        if (file === null) {
+            errorOut.innerHTML = "Ya dun goofed!! No file was selected.";
+            return;
+        }
+        else {
+
+            // check to see if filetype is .iced file
+            if (file.name.split('.').pop().toLowerCase() === "iced") {
+
+                // new reader
+                var reader = new FileReader();
+
+                //// event handler for when reader has read the file 
+                //reader.onload = function () {
+
+                //    // assign input to text in file
+                //    input = this.result;
+
+                //}
+
+                // read file as plain text (this will trigger 'onload' event)
+                reader.readAsText(file);
+
+                // get text
+                input = reader.result;
+
+            }
+            else {
+                errorOut.innerHTML = "File type error. Only .iced files accepted.";
+                return;
+            }
+
+        }
+
+    }
 
     // Reset form
     ResetForm();
@@ -847,6 +759,13 @@ function AddVar(dataType, name, content) {
 
 }
 
+function UpdateVar(name, newContent) {
+
+    // update variable
+    variables[name].Content = newContent;
+
+}
+
 // Get content of a variable
 function GetVar(name) {
 
@@ -895,7 +814,7 @@ function RemoveBlanks(collection) {
     // loop trough array
     for (var i = 0; i < collection.length; i++) {
         // test if index is blank
-        if (collection[i] === "" || collection[i] === "\n") {
+        if (collection[i].trim() === "" || collection[i] === "\n") {
             // remove element at that index
             collection.splice(i, 1);
         }
@@ -1001,16 +920,16 @@ function textMode() {
 
 function fileMode() {
 
-    document.getElementById("textInput").style.visibility = "visible";
+    document.getElementById("fileInput").style.visibility = "visible";
 
-    document.getElementById("fileInput").style.visibility = "hidden";
+    document.getElementById("textInput").style.visibility = "hidden";
 
 }
 
 document.getElementById("compile").addEventListener("click", HitSubmit);
 
-document.getElementById("textInput").addEventListener("change", textMode);
-document.getElementById("fileInput").addEventListener("change", fileMode);
+document.getElementById("textType").addEventListener("click", textMode);
+document.getElementById("fileType").addEventListener("click", fileMode);
 
 document.getElementById("textInput").onclick = function () {
 
