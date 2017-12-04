@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Machine>CND6273DK3</Machine>
-    <WindowsUser>Austin.VanBockern</WindowsUser>
+    <WindowsUser>austin.vanbockern</WindowsUser>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetOsVersion>10.0</TargetOsVersion>
     <TargetOsDescription>Windows 10.0</TargetOsDescription>
@@ -32,13 +32,13 @@
     <AppXManifest Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-11-21T17:04:46.928</Modified>
+      <Modified>2017-12-04T17:29:18.002</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\index.html">
       <PackagePath>index.html</PackagePath>
-      <Modified>2017-11-30T16:10:32.214</Modified>
+      <Modified>2017-12-04T17:15:04.275</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\images\LockScreenLogo.scale-200.png">
       <PackagePath>images\LockScreenLogo.scale-200.png</PackagePath>
@@ -76,7 +76,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\js\main.js">
       <PackagePath>js\main.js</PackagePath>
-      <Modified>2017-12-04T02:31:10.815</Modified>
+      <Modified>2017-12-04T17:27:09.166</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\css\default.css">
       <PackagePath>css\default.css</PackagePath>
@@ -85,7 +85,7 @@
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-11-21T17:04:46.734</Modified>
+      <Modified>2017-12-04T17:29:17.850</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

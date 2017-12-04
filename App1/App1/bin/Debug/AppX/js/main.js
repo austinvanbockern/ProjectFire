@@ -2,7 +2,6 @@
 
 var errorOut = document.getElementById("errors");
 
-
 // Keywords for printing
 var PrintWords = {
     // Print and discard top of stack.
@@ -110,50 +109,6 @@ var CommentWords = {
     //"//": function (terp) {
     //	terp.lexer.nextCharsUpTo("\n");
     //}
-};
-
-var CompareWords = {
-    // less than
-    "<": function (terp) {
-        if (terp.stack.length < 1) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var term1 = terp.stack.pop();
-        var term2 = terp.lexer.nextWord();
-        terp.stack.push(term1 < term2);
-    },
-    "<=": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var term2 = terp.stack.pop();
-        var term1 = terp.stack.pop();
-        terp.stack.push(term1 <= term2);
-    },
-    "=": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var term2 = terp.stack.pop();
-        var term1 = terp.stack.pop();
-        terp.stack.push(term1 == term2);
-    },
-    ">=": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var term2 = terp.stack.pop();
-        var term1 = terp.stack.pop();
-        terp.stack.push(term1 >= term2);
-    },
-    ">": function (terp) {
-        if (terp.stack.length < 2) {
-            outputOut.innerHTML = "Not enough items on stack";
-        }
-        var term2 = terp.stack.pop();
-        var term1 = terp.stack.pop();
-        terp.stack.push(term1 > term2);
-    }
 };
 
 var VariableWords = {
@@ -554,7 +509,7 @@ var VariableWords = {
         }
 };
 
-function HitSubmit() {
+async function HitSubmit() {
 
     // Var for input text
     var input;
@@ -594,6 +549,8 @@ function HitSubmit() {
                 // read file as plain text (this will trigger 'onload' event)
                 reader.readAsText(file);
 
+                await sleep(1);
+
                 // get text
                 input = reader.result;
 
@@ -611,9 +568,9 @@ function HitSubmit() {
     ResetForm();
 
     // Run interpreter
-    if (input != null || 
-        input != undefined ||
-        input != "") 
+    if (input !== null || 
+        input !== undefined ||
+        input !== "") 
     {
         Interpret(input);
     }
@@ -629,23 +586,25 @@ function HitSubmit() {
     return false;
 }
 
-function DoIntellisence() {
+function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
-    //var text = document.getElementById("input").innerHTML;
+//function DoIntellisence() {
 
-    //var cursor = document.getElementById("input").selectionStart;
+//    var text = document.getElementById("textInput").innerHTML;
 
-    //if (text.indexOf("PRINT") !== -1)
-    //{
-    //    document.getElementById("input").innerHTML = text.replace("PRINT", "<span style=\"color: blue\">PRINT</span>");
-    //}
+//    var cursor = document.getElementById("textInput").selectionStart;
 
-    //document.getElementById("input").move('character', cursor);
-    //document.getElementById("input").select();
+//    if (text.indexOf("PRINT") !== -1)
+//    {
+//        document.getElementById("textInput").innerHTML = text.replace("PRINT", "<span style=\"color: blue\">PRINT</span>");
+//    }
 
-    //document.getElementById("input").selectionStart = cursor;
+//    //document.getElementById("textInput").move('character', cursor);
+//    //document.getElementById("textInput").select();
 
-}
+//    //document.getElementById("textInput").selectionStart = cursor;
+
+//}
 
 // Resets form and class level variables
 function ResetForm() {
@@ -724,7 +683,7 @@ function Interpret(input) {
                 for (wordsI = 0; wordsI < words.length; wordsI = wordsI) {
 
                     // get nexy word
-                    word = GetNextWord().toUpperCase();
+                    word = GetNextWord();
 
                     // var to store returned value
                     var returnVar = true;
@@ -733,9 +692,6 @@ function Interpret(input) {
                     if (keywords[word])
                     {
                         returnVar = keywords[word](this);
-                    }
-                    else if (variables[word]) {
-                        outputOut.innerHTML = variables[word].Content;
                     }
                     else {
                         errorOut.innerHTML += "Word not recognized: " + word;

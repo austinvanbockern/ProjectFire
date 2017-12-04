@@ -15,9 +15,9 @@ c:\users\austin.vanbockern\Source\Repos\App1\App1\bld\Debug\qualifiers.txt
 c:\users\austin.vanbockern\Source\Repos\App1\App1\bld\Debug\qualifiers.txt.intermediate
 c:\users\austin.vanbockern\Source\Repos\App1\App1\bld\Debug\MultipleQualifiersPerDimensionFound.txt
 c:\users\austin.vanbockern\Source\Repos\App1\App1\bld\Debug\ProjectArchitectures.txt
+C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bin\Debug\App1.build.appxrecipe
 C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bin\Debug\ReverseMap\resources.pri
 C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bin\Debug\AppxManifest.xml
-C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bin\Debug\App1.build.appxrecipe
 C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bld\Debug\App1.jsproj.CoreCompileInputs.cache
 C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bld\Debug\ResourceHandlingTask.state
 C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bld\Debug\priconfig.xml
