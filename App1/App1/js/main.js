@@ -599,7 +599,7 @@ function HitSubmit() {
 
             }
             else {
-                errorOut.innerHTML = "File type error. Only .iced files accepted.";
+                errorOut.innerHTML = "File type error. Only \".iced\" files accepted.";
                 return;
             }
 
@@ -611,7 +611,19 @@ function HitSubmit() {
     ResetForm();
 
     // Run interpreter
-    Interpret(input);
+    if (input != null || 
+        input != undefined ||
+        input != "") 
+    {
+        Interpret(input);
+    }
+    else {
+        errorOut.innerHTML = "There was an error retrieving input.";
+    }
+
+    if (errorOut.innerHTML != "") {
+        outputOut.innerHTML = "";
+    }
 
     // return false so action prop of form is not run
     return false;
@@ -712,7 +724,7 @@ function Interpret(input) {
                 for (wordsI = 0; wordsI < words.length; wordsI = wordsI) {
 
                     // get nexy word
-                    word = GetNextWord().toUpperCase();
+                    word = GetNextWord();
 
                     // var to store returned value
                     var returnVar = true;
@@ -730,7 +742,13 @@ function Interpret(input) {
                         return;
                     }
 
+                    word = GetNextWord();
+
                     if (returnVar === false) {
+                        return;
+                    }
+                    else if (word != null) {
+                        errorOut.innerHTML = "Unexpected command:" + word;
                         return;
                     }
                     //outputOut.innerHTML += word + ", ";

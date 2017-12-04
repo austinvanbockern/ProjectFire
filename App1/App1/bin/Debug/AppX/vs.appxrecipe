@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Machine>CND6273DK3</Machine>
-    <WindowsUser>austin.vanbockern</WindowsUser>
+    <WindowsUser>Austin.VanBockern</WindowsUser>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetOsVersion>10.0</TargetOsVersion>
     <TargetOsDescription>Windows 10.0</TargetOsDescription>
@@ -76,7 +76,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\js\main.js">
       <PackagePath>js\main.js</PackagePath>
-      <Modified>2017-11-30T17:32:49.867</Modified>
+      <Modified>2017-12-04T02:31:10.815</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\css\default.css">
       <PackagePath>css\default.css</PackagePath>
