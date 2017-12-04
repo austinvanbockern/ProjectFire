@@ -32,7 +32,7 @@
     <AppXManifest Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-12-04T17:29:18.002</Modified>
+      <Modified>2017-12-04T17:29:21.915</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -76,7 +76,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\js\main.js">
       <PackagePath>js\main.js</PackagePath>
-      <Modified>2017-12-04T17:27:09.166</Modified>
+      <Modified>2017-12-04T17:48:37.773</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\css\default.css">
       <PackagePath>css\default.css</PackagePath>
@@ -85,7 +85,7 @@
     <AppxPackagedFile Include="C:\Users\austin.vanbockern\Documents\GitHub\ProjectFire\App1\App1\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-12-04T17:29:17.850</Modified>
+      <Modified>2017-12-04T17:29:21.855</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

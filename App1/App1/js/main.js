@@ -111,6 +111,21 @@ var CommentWords = {
     //}
 };
 
+var reserved = {
+    "STRING": function () {
+        return true;
+    },
+    "INT": function () {
+        return true;
+    },
+    "DOUBLE": function () {
+        return true;
+    },
+    "BOOLEAN": function () {
+        return true;
+    },
+}
+
 var VariableWords = {
     "NEW": function () {
 
@@ -131,7 +146,7 @@ var VariableWords = {
 
             // TODO VALIDATION FOR NAMING RULES
             // if variable name already exists or variable name is a keyword, error
-            if (keywords[word] || variables[word]) {
+            if (keywords[word.toUpperCase()] || variables[word] || reserved[word]) {
                 errorOut.innerHTML += "Invalid variable name.";
                 return false;
             }
@@ -185,7 +200,7 @@ var VariableWords = {
             word = GetNextWord();
 
             // if variable name already exists or variable name is a keyword, error and return
-            if (keywords[word.toUpperCase()] || variables[word]) {
+            if (keywords[word.toUpperCase()] || variables[word] || reserved[word]) {
                 errorOut.innerHTML += "Invalid variable name.";
                 return;
             }
@@ -239,7 +254,7 @@ var VariableWords = {
 
             // TODO VALIDATION FOR NAMING RULES
             // if variable name already exists or variable name is a keyword, error
-            if (keywords[word.toUpperCase()] || variables[word]) {
+            if (keywords[word.toUpperCase()] || variables[word] || reserved[word]) {
                 errorOut.innerHTML += "Invalid variable name.";
                 return;
             }
@@ -297,7 +312,7 @@ var VariableWords = {
 
             // TODO VALIDATION FOR NAMING RULES
             // if variable name already exists or variable name is a keyword, error
-            if (keywords[word.toUpperCase()] || variables[word]) {
+            if (keywords[word.toUpperCase()] || variables[word] || reserved[word]) {
                 errorOut.innerHTML += "Invalid variable name.";
                 return false;
             }
