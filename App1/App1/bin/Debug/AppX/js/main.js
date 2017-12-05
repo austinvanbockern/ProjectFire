@@ -9,7 +9,7 @@ var PrintWords = {
         // get the next word
         word = GetNextWord();
         // if the next word is null i.e. does not exist, error
-        if (word != null) {
+        if (word !== null) {
 
             // var for output
             var output = "";
@@ -52,7 +52,7 @@ var PrintWords = {
         // get the next word
         word = GetNextWord();
         // if the next word is null i.e. does not exist, error
-        if (word != null) {
+        if (word !== null) {
 
             // var for output
             var output = "";
@@ -123,8 +123,8 @@ var reserved = {
     },
     "BOOLEAN": function () {
         return true;
-    },
-}
+    }
+};
 
 var VariableWords = {
     "NEW": function () {
@@ -336,7 +336,7 @@ var VariableWords = {
                     content = GetString();
 
                     // If content returns not null, add variable
-                    if (content != null) {
+                    if (content !== null) {
                         AddVar(dataType, name, content);
                     }
 
@@ -486,13 +486,24 @@ var VariableWords = {
                     // get next word
                     word = GetNextWord();
 
+                    // If variable exists, assign content to 
+                    if (variables[word]) {
+
+                        content = variables[word].Content;
+
+                        // If content returns not null, add variable
+                        if (content !== null) {
+                            // add var to dictionary
+                            UpdateVar(varName, content);
+                        }
+                    }
                     // assign string word to content
-                    if (word.substr(0, 1) === "\"") {
+                    else if (word.substr(0, 1) === "\"") {
 
                         content = GetString();
 
                         // If content returns not null, add variable
-                        if (content != null) {
+                        if (content !== null) {
                             // add var to dictionary
                             UpdateVar(varName, content);
                         }
@@ -553,14 +564,6 @@ async function HitSubmit() {
                 // new reader
                 var reader = new FileReader();
 
-                //// event handler for when reader has read the file 
-                //reader.onload = function () {
-
-                //    // assign input to text in file
-                //    input = this.result;
-
-                //}
-
                 // read file as plain text (this will trigger 'onload' event)
                 reader.readAsText(file);
 
@@ -593,7 +596,7 @@ async function HitSubmit() {
         errorOut.innerHTML = "There was an error retrieving input.";
     }
 
-    if (errorOut.innerHTML != "") {
+    if (errorOut.innerHTML !== "") {
         outputOut.innerHTML = "";
     }
 
@@ -648,13 +651,17 @@ const DOCTYPE = "ICEICEBABY";
 const STATEMENT_DELIM = ";";
 
 //// Collections
-// Dictionary for keybord methods
+
+
+// Dictionary for keyword methods
 var keywords = {};
 // Dictionary for variables
 var variables = {
     DataType: "DataType",
     Content: "Content"
 };
+
+
 // Array for words within a statement
 var words = [];
 // Array for statements i.e. single lines of code
@@ -685,11 +692,12 @@ function Interpret(input) {
     if (GetNextStatement() === DOCTYPE) {
         // Loop through statements, processing each one
         for (stateI = 1; stateI < statements.length; stateI = stateI) {
+
             // get current statement
             statement = GetNextStatement();
 
             // if null was not assigned to current statement, loop through statement and process each word
-            if (statement != null) {
+            if (statement !== null) {
 
                 // get current statement
                 words = SplitSpaces(statement);
@@ -703,11 +711,12 @@ function Interpret(input) {
                     // var to store returned value
                     var returnVar = true;
 
-                    // process word TODO
+                    // process word if exists
                     if (keywords[word])
                     {
                         returnVar = keywords[word](this);
                     }
+                    // else, error
                     else {
                         errorOut.innerHTML += "Word not recognized: " + word;
                         return;
@@ -718,7 +727,7 @@ function Interpret(input) {
                     if (returnVar === false) {
                         return;
                     }
-                    else if (word != null) {
+                    else if (word !== null) {
                         errorOut.innerHTML = "Unexpected command:" + word;
                         return;
                     }
@@ -737,7 +746,7 @@ function Interpret(input) {
     }
 }
 
-// Try and add variable to variable list
+// Add variable to variable list
 function AddVar(dataType, name, content) {
 
     // add new item to variable dictionary
@@ -814,7 +823,7 @@ function RemoveBlanks(collection) {
 
 // Add keywords to keywords dictuonary
 function AddDictWords(dictionary) {
-    // Loop through
+    // Loop through passed dict and add to main dict
     for (var word in dictionary)
     {
         keywords[word.toUpperCase()] = dictionary[word];
@@ -834,7 +843,7 @@ function GetString() {
         word = word.slice(1);
 
         // loop through words 
-        while (word != null)
+        while (word !== null)
         {
             // If end quote is found, return the current 
             if (word.substr(-1, 1) === "\"")
@@ -849,7 +858,7 @@ function GetString() {
                 // add word to return string
                 returnStr += word;
 
-                if (words.length != wordsI) {
+                if (words.length !== wordsI) {
                     returnStr += " ";
                 }
             }
@@ -869,7 +878,7 @@ function GetEvaluation() {
 
     var outString = "";
 
-    while (word != null) {
+    while (word !== null) {
 
         // determine if word exists
         if (variables[word]) {
@@ -921,7 +930,7 @@ document.getElementById("textInput").onclick = function () {
 
     document.getElementById("fileInput").style.visibility = "hidden";
 
-}
+};
 
 document.getElementById("compile").addEventListener("click", HitSubmit);
 
