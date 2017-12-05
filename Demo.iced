@@ -1,0 +1,18 @@
+ICEICEBABY;
+NEW STRING str1 : "Hello World!";
+NEW INT x : 5;
+NEW INT y : 4 + 8;
+NEW INT z : x + y;
+NEW INT a;
+NEW STRING b;
+NEW INT c : ( x + 100 ) * 4;
+ASSIGN a : z;
+ASSIGN x : x + y + z + a;
+PRINTLINE str1;
+PRINTLINE y;
+PRINTLINE a;
+PRINTLINE z;
+PRINTLINE x;
+PRINTLINE "";
+PRINT "The variable c = ";
+PRINT c;
