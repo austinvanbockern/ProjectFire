@@ -4,8 +4,9 @@ var errorOut = document.getElementById("errors");
 
 // Keywords for printing
 var PrintWords = {
-    // Print and discard top of stack.
+    // PRINT STATEMENT
     "PRINT": function () {
+
         // get the next word
         word = GetNextWord();
         // if the next word is null i.e. does not exist, error

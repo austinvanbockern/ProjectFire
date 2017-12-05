@@ -6,6 +6,7 @@ var errorOut = document.getElementById("errors");
 var PrintWords = {
     // PRINT STATEMENT
     "PRINT": function () {
+
         // get the next word
         word = GetNextWord();
         // if the next word is null i.e. does not exist, error
